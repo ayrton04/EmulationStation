@@ -6,206 +6,200 @@
 #include "PlatformId.h"
 #include "Settings.h"
 #include "SystemData.h"
-#include <pugixml/src/pugixml.hpp>
+#include <jsoncpp/json/json.h>
+#include <istream>
+#include <string>
 
 using namespace PlatformIds;
 const std::map<PlatformId, const char*> gamesdb_platformid_map {
-	{ THREEDO, "3DO" },
-	{ AMIGA, "Amiga" },
-	{ AMSTRAD_CPC, "Amstrad CPC" },
+	{ THREEDO, "25" },
+	{ AMIGA, "4911" },
+	{ AMSTRAD_CPC, "4914" },
 	// missing apple2
-	{ ARCADE, "Arcade" },
+	{ ARCADE, "23" },
 	// missing atari 800
-	{ ATARI_2600, "Atari 2600" },
-	{ ATARI_5200, "Atari 5200" },
-	{ ATARI_7800, "Atari 7800" },
-	{ ATARI_JAGUAR, "Atari Jaguar" },
-	{ ATARI_JAGUAR_CD, "Atari Jaguar CD" },
-	{ ATARI_LYNX, "Atari Lynx" },
+	{ ATARI_2600, "22" },
+	{ ATARI_5200, "26" },
+	{ ATARI_7800, "27" },
+	{ ATARI_JAGUAR, "28" },
+	{ ATARI_JAGUAR_CD, "29" },
+	{ ATARI_LYNX, "4924" },
 	// missing atari ST/STE/Falcon
-	{ ATARI_XE, "Atari XE" },
-	{ COLECOVISION, "Colecovision" },
-	{ COMMODORE_64, "Commodore 64" },
-	{ INTELLIVISION, "Intellivision" },
-	{ MAC_OS, "Mac OS" },
-	{ XBOX, "Microsoft Xbox" },
-	{ XBOX_360, "Microsoft Xbox 360" },
-	{ MSX, "MSX" },
-	{ NEOGEO, "Neo Geo" },
-	{ NEOGEO_POCKET, "Neo Geo Pocket" },
-	{ NEOGEO_POCKET_COLOR, "Neo Geo Pocket Color" },
-	{ NINTENDO_3DS, "Nintendo 3DS" },
-	{ NINTENDO_64, "Nintendo 64" },
-	{ NINTENDO_DS, "Nintendo DS" },
-	{ FAMICOM_DISK_SYSTEM, "Famicom Disk System" },
-	{ NINTENDO_ENTERTAINMENT_SYSTEM, "Nintendo Entertainment System (NES)" },
-	{ GAME_BOY, "Nintendo Game Boy" },
-	{ GAME_BOY_ADVANCE, "Nintendo Game Boy Advance" },
-	{ GAME_BOY_COLOR, "Nintendo Game Boy Color" },
-	{ NINTENDO_GAMECUBE, "Nintendo GameCube" },
-	{ NINTENDO_WII, "Nintendo Wii" },
-	{ NINTENDO_WII_U, "Nintendo Wii U" },
-	{ NINTENDO_VIRTUAL_BOY, "Nintendo Virtual Boy" },
-	{ NINTENDO_GAME_AND_WATCH, "Game &amp; Watch" },
-	{ PC, "PC" },
-	{ SEGA_32X, "Sega 32X" },
-	{ SEGA_CD, "Sega CD" },
-	{ SEGA_DREAMCAST, "Sega Dreamcast" },
-	{ SEGA_GAME_GEAR, "Sega Game Gear" },
-	{ SEGA_GENESIS, "Sega Genesis" },
-	{ SEGA_MASTER_SYSTEM, "Sega Master System" },
-	{ SEGA_MEGA_DRIVE, "Sega Mega Drive" },
-	{ SEGA_SATURN, "Sega Saturn" },
-	{ SEGA_SG1000, "SEGA SG-1000" },	
-	{ PLAYSTATION, "Sony Playstation" },
-	{ PLAYSTATION_2, "Sony Playstation 2" },
-	{ PLAYSTATION_3, "Sony Playstation 3" },
-	{ PLAYSTATION_4, "Sony Playstation 4" },
-	{ PLAYSTATION_VITA, "Sony Playstation Vita" },
-	{ PLAYSTATION_PORTABLE, "Sony Playstation Portable" },
-	{ SUPER_NINTENDO, "Super Nintendo (SNES)" },
-	{ TURBOGRAFX_16, "TurboGrafx 16" }, // HuCards only
-	{ TURBOGRAFX_CD, "TurboGrafx CD" }, // CD-ROMs only
-	{ WONDERSWAN, "WonderSwan" },
-	{ WONDERSWAN_COLOR, "WonderSwan Color" },
-	{ ZX_SPECTRUM, "Sinclair ZX Spectrum" },
-	{ VIDEOPAC_ODYSSEY2, "Magnavox Odyssey 2" },
-	{ VECTREX, "Vectrex" },
-	{ TRS80_COLOR_COMPUTER, "TRS-80 Color Computer" },
-	{ TANDY, "TRS-80 Color Computer" }
+	{ ATARI_XE, "30" },
+	{ COLECOVISION, "31" },
+	{ COMMODORE_64, "40" },
+	{ INTELLIVISION, "32" },
+	{ MAC_OS, "37" },
+	{ XBOX, "14" },
+	{ XBOX_360, "15" },
+	{ MSX, "4929" },
+	{ NEOGEO, "24" },
+	{ NEOGEO_POCKET, "4922" },
+	{ NEOGEO_POCKET_COLOR, "4932" },
+	{ NINTENDO_3DS, "4912" },
+	{ NINTENDO_64, "3" },
+	{ NINTENDO_DS, "8" },
+	{ FAMICOM_DISK_SYSTEM, "4936" },
+	{ NINTENDO_ENTERTAINMENT_SYSTEM, "7" },
+	{ GAME_BOY, "4" },
+	{ GAME_BOY_ADVANCE, "5" },
+	{ GAME_BOY_COLOR, "41" },
+	{ NINTENDO_GAMECUBE, "2" },
+	{ NINTENDO_WII, "9" },
+	{ NINTENDO_WII_U, "38" },
+	{ NINTENDO_VIRTUAL_BOY, "4918" },
+	{ NINTENDO_GAME_AND_WATCH, "4950" },
+	{ PC, "1" },
+	{ SEGA_32X, "33" },
+	{ SEGA_CD, "21" },
+	{ SEGA_DREAMCAST, "16" },
+	{ SEGA_GAME_GEAR, "20" },
+	{ SEGA_GENESIS, "18" },
+	{ SEGA_MASTER_SYSTEM, "35" },
+	{ SEGA_MEGA_DRIVE, "36" },
+	{ SEGA_SATURN, "17" },
+	{ SEGA_SG1000, "4929" },	
+	{ PLAYSTATION, "10" },
+	{ PLAYSTATION_2, "11" },
+	{ PLAYSTATION_3, "12" },
+	{ PLAYSTATION_4, "4919" },
+	{ PLAYSTATION_VITA, "39" },
+	{ PLAYSTATION_PORTABLE, "13" },
+	{ SUPER_NINTENDO, "6" },
+	{ TURBOGRAFX_16, "34" }, // HuCards only
+	{ TURBOGRAFX_CD, "4955" }, // CD-ROMs only
+	{ WONDERSWAN, "4925" },
+	{ WONDERSWAN_COLOR, "4926" },
+	{ ZX_SPECTRUM, "4913" },
+	{ VIDEOPAC_ODYSSEY2, "4927" },
+	{ VECTREX, "4939" },
+	{ TRS80_COLOR_COMPUTER, "4941" },
+	{ TANDY, "4941" }
 };
 
-void thegamesdb_generate_scraper_requests(const ScraperSearchParams& params, std::queue< std::unique_ptr<ScraperRequest> >& requests, 
+void thegamesdb_generate_scraper_requests(
+	const ScraperSearchParams& params,
+	std::queue< std::unique_ptr<ScraperRequest> >& requests, 
 	std::vector<ScraperSearchResult>& results)
 {
-	std::string path;
-	bool usingGameID = false;
+	std::string path = "api.thegamesdb.net/Games/";
+	bool have_game_id = false;
+
+	static const std::string api_key = "ab00c1ddf561fe99cd36c356c34d4f0bf4b8e002018e4264ab54511e92f91402";
 
 	std::string cleanName = params.nameOverride;
 	if (!cleanName.empty() && cleanName.substr(0,3) == "id:")
 	{
 		std::string gameID = cleanName.substr(3);
-		path = "legacy.thegamesdb.net/api/GetGame.php?id=" + HttpReq::urlEncode(gameID);
-		usingGameID = true;
-	}else{
+		path += "ByGameID?apikey=" + api_key + "&id=" + HttpReq::urlEncode(gameID);
+		have_game_id = true;
+	}
+	else
+	{
 		if (cleanName.empty())
 			cleanName = params.game->getCleanName();
-		path += "legacy.thegamesdb.net/api/GetGamesList.php?name=" + HttpReq::urlEncode(cleanName);
+		path += "ByGameName?apikey=" + api_key + "&name=" + HttpReq::urlEncode(cleanName);
 	}
 
-	if(usingGameID)
+	path += "&fields=" + HttpReq::urlEncode("players,publisher,genres,overview");
+	path += "&include=boxart";
+
+	if (!have_game_id)
 	{
-		// if we have the ID already, we don't need the GetGameList request
-		requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBRequest(results, path)));
-	}else if(params.system->getPlatformIds().empty()){
-		// no platform specified, we're done
-		requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBRequest(requests, results, path)));
-	}else{
-		// go through the list, we need to split this into multiple requests 
-		// because TheGamesDB API either sucks or I don't know how to use it properly...
-		std::string urlBase = path;
 		auto& platforms = params.system->getPlatformIds();
+
+		std::string platform_query_string;
 		for(auto platformIt = platforms.cbegin(); platformIt != platforms.cend(); platformIt++)
 		{
-			path = urlBase;
-			auto mapIt = gamesdb_platformid_map.find(*platformIt);
-			if(mapIt != gamesdb_platformid_map.cend())
+			auto map_it = gamesdb_platformid_map.find(*platformIt);
+			if(map_it != gamesdb_platformid_map.cend())
 			{
-				path += "&platform=";
-				path += HttpReq::urlEncode(mapIt->second);
-			}else{
+				platform_query_string += std::string(map_it->second) + ",";
+			}
+			else
+			{
 				LOG(LogWarning) << "TheGamesDB scraper warning - no support for platform " << getPlatformName(*platformIt);
 			}
+		}
 
-			requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBRequest(requests, results, path)));
+		if (platform_query_string != "")
+		{
+			platform_query_string.pop_back();  // Get rid of extra comma
+			path += "&platform=" + HttpReq::urlEncode(platform_query_string);
 		}
 	}
+
+	LOG(LogInfo) << "Request URL is: " << path << "\n";
+
+  // if we have the ID already, we don't need the GetGameList request
+	// requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBRequest(results, path)));
+	requests.push(std::unique_ptr<ScraperRequest>(new TheGamesDBRequest(requests, results, path)));
 }
 
 void TheGamesDBRequest::process(const std::unique_ptr<HttpReq>& req, std::vector<ScraperSearchResult>& results)
 {
 	assert(req->status() == HttpReq::REQ_SUCCESS);
 
-	pugi::xml_document doc;
-	pugi::xml_parse_result parseResult = doc.load(req->getContent().c_str());
-	if(!parseResult)
+	Json::Reader json_reader;
+	Json::Value root;
+
+	if(!json_reader.parse(req->getContent(), root))
 	{
-		std::stringstream ss;
-		ss << "TheGamesDBRequest - Error parsing XML. \n\t" << parseResult.description() << "";
-		std::string err = ss.str();
+		std::string err =  "TheGamesDBRequest - Error parsing json. \n";
 		setError(err);
 		LOG(LogError) << err;
 		return;
 	}
 
-	if (isGameRequest())
-		processGame(doc, results);
-	else
-		processList(doc, results);
-}
-
-void TheGamesDBRequest::processGame(const pugi::xml_document& xmldoc, std::vector<ScraperSearchResult>& results)
-{
-	pugi::xml_node data = xmldoc.child("Data");
-
-	std::string baseImageUrl = data.child("baseImgUrl").text().get();
-
-	pugi::xml_node game = data.child("Game");
-	if(game)
+	if (root["code"].asInt() != 200)
 	{
-		ScraperSearchResult result;
+		return;
+	}
 
-		result.mdl.set("name", game.child("GameTitle").text().get());
-		result.mdl.set("desc", game.child("Overview").text().get());
-		result.mdl.set("releasedate", Utils::Time::DateTime(Utils::Time::stringToTime(game.child("ReleaseDate").text().get(), "%m/%d/%Y")));
-		result.mdl.set("developer", game.child("Developer").text().get());
-		result.mdl.set("publisher", game.child("Publisher").text().get());
-		result.mdl.set("genre", game.child("Genres").first_child().text().get());
-		result.mdl.set("players", game.child("Players").text().get());
+	const auto& data = root["data"];
+	const auto& include = root["include"];
 
-		if(Settings::getInstance()->getBool("ScrapeRatings") && game.child("Rating"))
+	auto count = data["count"].asInt();
+	const auto& games = data["games"];
+
+	const auto& boxart = data["boxart"];
+	const auto& base_image_url = boxart["base_url"];
+	const auto& base_thumb_url = base_image_url["thumb"].asString();
+	const auto& base_full_url = base_image_url["original"].asString();
+	const auto& image_data = boxart["data"];
+
+	ScraperSearchResult result;
+
+	for (int i = 0; i < static_cast<int>(games.size()); ++i)
+	{
+		const auto& game = games[i];
+		const auto game_id = game["id"].asString();
+	
+		result.mdl.set("name", game["game_title"].asString());
+		result.mdl.set("desc", game["overview"].asString());
+		result.mdl.set("releasedate", Utils::Time::DateTime(Utils::Time::stringToTime(game["release_date"].asString(), "%m/%d/%Y")));
+		//result.mdl.set("developer", game.child("Developer").text().get());
+		//result.mdl.set("publisher", game.child("Publisher").text().get());
+		//result.mdl.set("genre", game.child("Genres").first_child().text().get());
+		result.mdl.set("players", game["players"].asString());
+
+		const auto& game_image_info = image_data[game_id];
+
+		if (game_image_info != nullptr)
 		{
-			float ratingVal = (game.child("Rating").text().as_int() / 10.0f);
-			std::stringstream ss;
-			ss << ratingVal;
-			result.mdl.set("rating", ss.str());
-		}
+			auto side = game_image_info[0];
 
-		pugi::xml_node images = game.child("Images");
-
-		if(images)
-		{
-			pugi::xml_node art = images.find_child_by_attribute("boxart", "side", "front");
-
-			if(art)
+			if (side["side"] == "back")
 			{
-				result.thumbnailUrl = baseImageUrl + art.attribute("thumb").as_string();
-				result.imageUrl = baseImageUrl + art.text().get();
+				side = game_image_info[1];
 			}
+
+			const auto path = side["filename"].asString();
+
+		  result.thumbnailUrl = base_thumb_url + path;
+		  result.imageUrl = base_full_url + path;
 		}
-
-		results.push_back(result);
 	}
-}
 
-void TheGamesDBRequest::processList(const pugi::xml_document& xmldoc, std::vector<ScraperSearchResult>& results)
-{
-	assert(mRequestQueue != nullptr);
-
-	pugi::xml_node data = xmldoc.child("Data");
-	pugi::xml_node game = data.child("Game");
-
-	// limit the number of results per platform, not in total.
-	// otherwise if the first platform returns >= 7 games
-	// but the second platform contains the relevant game,
-	// the relevant result would not be shown.
-	for(int i = 0; game && i < MAX_SCRAPER_RESULTS; i++)
-	{
-		std::string id = game.child("id").text().get();
-		std::string path = "legacy.thegamesdb.net/api/GetGame.php?id=" + id;
-
-		mRequestQueue->push(std::unique_ptr<ScraperRequest>(new TheGamesDBRequest(results, path)));
-
-		game = game.next_sibling("Game");
-	}
+	results.push_back(result);
 }

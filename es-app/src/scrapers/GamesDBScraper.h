@@ -3,6 +3,7 @@
 #define ES_APP_SCRAPERS_GAMES_DB_SCRAPER_H
 
 #include "scrapers/Scraper.h"
+#include <jsoncpp/json/json.h>
 
 namespace pugi { class xml_document; }
 
@@ -19,8 +20,8 @@ public:
 
 protected:
 	void process(const std::unique_ptr<HttpReq>& req, std::vector<ScraperSearchResult>& results) override;
-	void processList(const pugi::xml_document& xmldoc, std::vector<ScraperSearchResult>& results);
-	void processGame(const pugi::xml_document& xmldoc, std::vector<ScraperSearchResult>& results);
+	void processList(const Json::Value& root, std::vector<ScraperSearchResult>& results);
+	void processGame(const Json::Value& root, std::vector<ScraperSearchResult>& results);
 	bool isGameRequest() { return !mRequestQueue; }
 
 	std::queue< std::unique_ptr<ScraperRequest> >* mRequestQueue;
