@@ -101,20 +101,20 @@ void thegamesdb_generate_scraper_requests(
     path += "ByGameName?apikey=" + api_key + "&name=" + HttpReq::urlEncode(cleanName);
   }
 
-  path += "&fields=" + HttpReq::urlEncode("players,publisher,genres,overview");
+  path += "&fields=" + HttpReq::urlEncode("players,publishers,genres,overview");
   path += "&include=boxart";
 
   if (!have_game_id)
   {
     auto& platforms = params.system->getPlatformIds();
 
-    std::string platform_query_string;
+    std::string platform_filter_string = "platform";
     for(auto platformIt = platforms.cbegin(); platformIt != platforms.cend(); platformIt++)
     {
       auto map_it = gamesdb_platformid_map.find(*platformIt);
       if(map_it != gamesdb_platformid_map.cend())
       {
-        platform_query_string += std::string(map_it->second) + ",";
+        platform_filter_string += std::string(map_it->second) + ",";
       }
       else
       {
@@ -122,10 +122,10 @@ void thegamesdb_generate_scraper_requests(
       }
     }
 
-    if (platform_query_string != "")
+    if (platform_filter_string != "")
     {
-      platform_query_string.pop_back();  // Get rid of extra comma
-      path += "&platform=" + HttpReq::urlEncode(platform_query_string);
+      platform_filter_string.pop_back();  // Get rid of extra comma
+      path += "&filter" + HttpReq::urlEncode("[" + platform_filter_string + "]");
     }
   }
 
@@ -192,13 +192,7 @@ void TheGamesDBRequest::process(const std::unique_ptr<HttpReq>& req, std::vector
     set_string_if_present(game, "game_title", "name", result);
     set_string_if_present(game, "overview", "desc", result);
     set_string_if_present(game, "players", "players", result);
-
-    const auto& release_date = game["release_date"];
-    if (!release_date.isNull())
-    {
-      result.mdl.set("releasedate",
-        Utils::Time::DateTime(Utils::Time::stringToTime(game["release_date"].asString(), "%Y-%m-%d")));
-    }
+    set_string_if_present(game, "release_date", "releasedate", result);
 
     //result.mdl.set("developer", game.child("Developer").text().get());
     //result.mdl.set("publisher", game.child("Publisher").text().get());
