@@ -125,7 +125,7 @@ void thegamesdb_generate_scraper_requests(
     if (platform_filter_string != "")
     {
       platform_filter_string.pop_back();  // Get rid of extra comma
-      path += "&filter" + HttpReq::urlEncode("[" + platform_filter_string + "]");
+      path += "&filter" + HttpReq::urlEncode("[platform]") + "=" + HttpReq::urlEncode(platform_filter_string);
     }
   }
 
