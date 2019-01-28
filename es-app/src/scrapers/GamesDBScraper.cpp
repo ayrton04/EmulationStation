@@ -108,7 +108,7 @@ void thegamesdb_generate_scraper_requests(
   {
     auto& platforms = params.system->getPlatformIds();
 
-    std::string platform_filter_string = "platform";
+    std::string platform_filter_string;
     for(auto platformIt = platforms.cbegin(); platformIt != platforms.cend(); platformIt++)
     {
       auto map_it = gamesdb_platformid_map.find(*platformIt);
